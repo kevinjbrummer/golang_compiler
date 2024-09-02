@@ -11,10 +11,10 @@ import (
 const (
 	_int = iota
 	LOWEST
-	EQUALS // ==
-	LESSGREATER // > or <
-	SUM // +
-	PRODUCT // *
+	EQUALS // ==, !=
+	LESSGREATER // >, <, >=, <=
+	SUM // + or -
+	PRODUCT // * or /
 	PREFIX // -X or !X
 	CALL // myfunction(x)
 )
