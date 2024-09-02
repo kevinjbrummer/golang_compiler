@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-var TRACE bool = false
+const TRACE bool = false
 
 const (
 	_int = iota
