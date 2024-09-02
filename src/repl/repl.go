@@ -3,29 +3,36 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	"goblin/lexer"
+	"goblin/parser"
 	"io"
-	"monkey/lexer"
-	"monkey/parser"
+	"os/user"
 )
 
 
 const PROMPT = ">> "
 
-const MONKEY_FACE = `            __,__
-   .--.  .-"     "-.  .--.
-  / .. \/  .-. .-.  \/ .. \
- | |  '|  /   Y   \  |'  | |
- | \   \  \ 0 | 0 /  /   / |
-  \ '- ,\.-"""""""-./, -' /
-   ''-' /_   ^ ^   _\ '-''
-       |  \._   _./  |
-       \   \ '~' /   /
-        '._ '-=-' _.'
-           '-----'
+const GOBLIN_LOGO = `             _     _ _       
+            | |   | (_)      
+  __ _  ___ | |__ | |_ _ __  
+ / _  |/ _ \| '_ \| | | '_ \ 
+| (_| | (_) | |_) | | | | | |
+ \__, |\___/|_.__/|_|_|_| |_|
+  __/ |                      
+ |___/ 
 `
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+  user, err := user.Current()
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Fprint(out, GOBLIN_LOGO + "\n")
+	fmt.Printf("Hello %s! This is the Goblin programming language!\n", user.Username)
+	fmt.Printf("Feel free to type in commands\n")
 
 	for {
 		fmt.Fprint(out, PROMPT)
@@ -51,7 +58,6 @@ func Start(in io.Reader, out io.Writer) {
 }
 
 func printParserErrors(out io.Writer, errors[]string) {
-	io.WriteString(out, MONKEY_FACE)
 	io.WriteString(out, "Woops! We ran into some monkey business here!\n")
 	io.WriteString(out, "parser errors:\n")
 	
