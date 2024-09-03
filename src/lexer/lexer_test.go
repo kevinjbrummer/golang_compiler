@@ -33,6 +33,16 @@ func TestNextToken(t *testing.T) {
 	11 >= 10;
 	
 	9 <= 10;
+
+	"foo";
+
+	"Hello, World!";
+
+	"hello \"world\"";
+
+	"new line\n";
+
+	"\ttab";
 	`
 
 	tests := []struct {
@@ -119,6 +129,16 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "9"},
 		{token.LT_EQ, "<="},
 		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "foo"},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "Hello, World!"},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "hello \"world\""},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "new line\n"},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "\ttab"},
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}

@@ -20,6 +20,7 @@ const (
 	RETURN = "RETURN"
 	TRUE = "TRUE"
 	FALSE = "FALSE"
+	STRING = "STRING"
 
 	// Operators
 	

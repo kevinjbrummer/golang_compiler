@@ -1,6 +1,9 @@
 package lexer
 
-import "goblin/token"
+import (
+	"fmt"
+	"goblin/token"
+)
 
 
 type Lexer struct {
@@ -77,6 +80,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.COMMA, l.ch)
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -116,6 +122,32 @@ func (l *Lexer) readNumber() string {
 	}
 	
 	return l.input[position:l.position]
+}
+
+func (l *Lexer) readString() string {
+	str := ""
+
+	for { 
+		l.readChar() 
+		if  l.ch == '"' || l.ch == 0 {
+			break
+		} else if l.ch == '\\' {
+			switch {
+			case l.peekChar() ==  '"':
+				str += "\""
+			case l.peekChar() == 'n':
+				str += "\n"
+			case l.peekChar() == 't':
+				str += "\t"
+			}
+			l.readChar()
+		} else {
+			str += fmt.Sprintf("%c", l.input[l.position])
+		}
+
+	}
+
+	return str
 }
 
 func (l *Lexer) skipWhitespace() {
