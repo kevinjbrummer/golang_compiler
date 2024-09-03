@@ -1,6 +1,9 @@
 package object
 
-import "fmt"
+import (
+	"fmt"
+	"goblin/color"
+)
 
 type ObjectType string
 
@@ -68,7 +71,7 @@ type Error struct {
 }
 
 func (e *Error) Inspect() string {
-	return "ERROR: " + e.Message
+	return color.ColorWrapper(color.RED, "ERROR: ") + e.Message
 }
 
 func (e *Error) Type() ObjectType {
