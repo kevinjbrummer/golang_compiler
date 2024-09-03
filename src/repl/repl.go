@@ -6,6 +6,7 @@ import (
 	"goblin/color"
 	"goblin/evaluator"
 	"goblin/lexer"
+	"goblin/object"
 	"goblin/parser"
 	"io"
 	"os/user"
@@ -35,6 +36,8 @@ func Start(in io.Reader, out io.Writer) {
 	fmt.Printf("Hello %s! This is the Goblin programming language!\n", user.Username)
 	fmt.Printf("Feel free to type in commands\n")
 
+	env := object.NewEnvironment()
+
 	for {
 		fmt.Fprint(out, color.ColorWrapper(color.GREEN, PROMPT))
 		scanned := scanner.Scan()
@@ -47,7 +50,7 @@ func Start(in io.Reader, out io.Writer) {
 		if line == "exit" {
 			return
 		}
-		
+
 		l := lexer.New(line)
 		p := parser.New(l)
 		program := p.ParseProgram()
@@ -57,7 +60,7 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluated := evaluator.Eval(program)
+		evaluated := evaluator.Eval(program, env)
 
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
