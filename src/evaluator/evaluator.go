@@ -475,7 +475,6 @@ func evalHashIndexExpression(hash, index object.Object) object.Object {
 		return newError("unusable as hash key: %s", index.Type())
 	}
 
-	fmt.Printf("%+v", hashObject.Pairs)
 	pair, ok := hashObject.Pairs[key.HashKey()]
 	if !ok {
 		return NULL

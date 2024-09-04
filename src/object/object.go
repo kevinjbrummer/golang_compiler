@@ -173,14 +173,11 @@ type HashKey struct {
 
 func getHashKey(objType ObjectType, value uint64) HashKey {
 	key := fmt.Sprintf("%s-%d", objType, value)
-	println(key)
 	hashKey, ok := hashCache[key]; 
 	if ok { 
-		println("cache hit")
 		return hashKey
 	}
 
-	println("cache miss")
 	hashKey = HashKey{Type: objType, Value: value} 
 	hashCache[key] = hashKey
 	return hashKey
