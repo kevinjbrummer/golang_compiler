@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"goblin/ast"
 	"goblin/color"
+	"hash/fnv"
 	"strings"
 )
 
 type ObjectType string
 type BuiltinFunction func(args ...Object) Object
+
+var hashCache = make(map[string]HashKey)
 
 const (
 	INTEGER_OBJ = "INTEGER"
@@ -21,6 +24,7 @@ const (
 	FUNCTION_OBJ = "OBJECT"
 	BUILTIN_OBJ = "BUILTIN"
 	ARRAY_OBJ = "ARRAY"
+	HASH_OBJ = "HASH"
 )
 
 type Object interface {
@@ -160,4 +164,75 @@ func(a *Array) Inspect() string {
 
 func(a *Array) Type() ObjectType {
 	return ARRAY_OBJ
+}
+
+type HashKey struct {
+	Type ObjectType
+	Value uint64
+}
+
+func getHashKey(objType ObjectType, value uint64) HashKey {
+	key := fmt.Sprintf("%s-%d", objType, value)
+	hashKey, ok := hashCache[key]; 
+	if ok { 
+		return hashKey
+	}
+
+	hashKey = HashKey{Type: objType, Value: value} 
+	hashCache[key] = hashKey
+	return hashKey
+}
+
+func (b *Boolean) HashKey() HashKey {
+	var value uint64
+	
+	if b.Value {
+		value = 1
+	} else {
+		value = 0
+	}
+
+	return getHashKey(b.Type(), value)
+}
+
+func (i *Integer) HashKey() HashKey {
+	return getHashKey(i.Type(), uint64(i.Value))
+}
+
+func (s *String) HashKey() HashKey {
+	h := fnv.New64a()
+	h.Write([]byte(s.Value))
+	return getHashKey(s.Type(), h.Sum64())
+}
+
+type HashPair struct {
+	Key Object
+	Value Object
+}
+
+type Hash struct {
+	Pairs map[HashKey]HashPair
+}
+
+func (h *Hash) Inspect() string {
+	var out bytes.Buffer
+
+	pairs := []string{}
+	for _, pair := range h.Pairs {
+		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()))
+	}
+
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
+
+	return out.String()
+}
+
+func (h *Hash) Type() string {
+	return HASH_OBJ
+}
+
+type Hashable interface {
+	HashKey() HashKey
 }
