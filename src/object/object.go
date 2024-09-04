@@ -21,7 +21,7 @@ const (
 	NULL_OBJ = "NULL"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	ERROR_OBJ = "ERROR"
-	FUNCTION_OBJ = "OBJECT"
+	FUNCTION_OBJ = "FUNCTION"
 	BUILTIN_OBJ = "BUILTIN"
 	ARRAY_OBJ = "ARRAY"
 	HASH_OBJ = "HASH"
@@ -173,11 +173,14 @@ type HashKey struct {
 
 func getHashKey(objType ObjectType, value uint64) HashKey {
 	key := fmt.Sprintf("%s-%d", objType, value)
+	println(key)
 	hashKey, ok := hashCache[key]; 
 	if ok { 
+		println("cache hit")
 		return hashKey
 	}
 
+	println("cache miss")
 	hashKey = HashKey{Type: objType, Value: value} 
 	hashCache[key] = hashKey
 	return hashKey
@@ -229,7 +232,7 @@ func (h *Hash) Inspect() string {
 	return out.String()
 }
 
-func (h *Hash) Type() string {
+func (h *Hash) Type() ObjectType {
 	return HASH_OBJ
 }
 
