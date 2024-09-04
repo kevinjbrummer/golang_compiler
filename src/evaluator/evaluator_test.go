@@ -31,6 +31,9 @@ func TestEvalIntegerExpression(t *testing.T) {
 		{"3 * 3 * 3 + 10", 37},
 		{"3 * (3 * 3) + 10", 37},
 		{"(5 + 10 * 2 + 15 / 3) * 2 + -10", 50},
+		{"5 ** 2", 25},
+		{"5 ** 3", 125},
+		{"5 * 2 ** 2", 20},
 	}
 
 	for _, tt := range tests {
@@ -208,6 +211,7 @@ func TestErrorHandling(t *testing.T) {
 			{`"foo" - "bar"`, "unknown operator: STRING - STRING"},
 			{`5[0]`, "index operator not supported: INTEGER"},
 			{`{"name": "Goblin"}[fn(x) {x}];`, "unusable as hash key: FUNCTION"},
+			{`"five" ** 5`, "type mismatch: STRING ** INTEGER"},
 	}
 
 	for _, tt := range tests {

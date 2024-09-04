@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goblin/ast"
 	"goblin/object"
+	"math"
 )
 
 var (
@@ -304,6 +305,8 @@ func evalIntegerInfixExpression(operator string, left object.Object, right objec
 		return &object.Integer{Value: leftVal * rightVal}
 	case "/":
 		return &object.Integer{Value: leftVal / rightVal}
+	case "**":
+		return &object.Integer{Value: int64(math.Pow(float64(leftVal), float64(rightVal)))}
 	case ">":
 		return nativeBoolToBooleanObject(leftVal > rightVal)
 	case "<":
