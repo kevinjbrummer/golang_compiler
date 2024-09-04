@@ -632,6 +632,38 @@ func TestCallExpressionParsing(t *testing.T) {
 	testInfixExpression(t, exp.Arguments[2], 4, "+", 5)
 }
 
+func TestParsingArrayLiterals(t *testing.T) {
+	input := "[1, 2 * 2, 3 + 3]"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParseErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements does not include %d statement(s). got=%d", 1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not *ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.ArrayLiteral)
+	if !ok {
+		t.Fatalf("stmt.Expression is not *ast.ArrayLIteral. got %T", stmt.Expression)
+	}
+
+	if len(exp.Elements) != 3 {
+		t.Fatalf("exp.Elements does not contain %d arguments. got=%d", 3, len(exp.Elements))
+	}
+
+	testLiteralExpression(t, exp.Elements[0], 1)
+	testInfixExpression(t, exp.Elements[1], 2, "*", 2)
+	testInfixExpression(t, exp.Elements[2], 3, "+", 3)
+	
+}
+
 //###############################################
 // Helper Functions 
 //###############################################
