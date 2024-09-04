@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"fmt"
 	"goblin/lexer"
 	"goblin/object"
 	"goblin/parser"
@@ -303,6 +304,27 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len("hello world")`, 11},
 		{`len(1)`, "argument to `len` not supported. got INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{`len([1, 2])`, 2},
+		{`first([])`, nil},
+		{`first([1, 2])`, 1},
+		{`first("string")`, "argument to `first` not supported. got STRING"},
+		{`first([1, 2], [3, 4])`, "wrong number of arguments. got=2, want=1"},
+		{`last([])`, nil},
+		{`last([1])`, 1},
+		{`last([1, 2])`, 2},
+		{`last("string")`, "argument to `last` not supported. got STRING"},
+		{`last([1, 2], [3, 4])`, "wrong number of arguments. got=2, want=1"},
+		{`rest([1, 2])`, []int{2}},
+		{`rest([2])`, []int{}},
+		{`rest([])`, nil},
+		{`rest("string")`, "argument to `rest` not supported. got STRING"},
+		{`rest([1, 2], [3, 4])`, "wrong number of arguments. got=2, want=1"},
+		{`push([], 1)`, []int{1}},
+		{`push([1, 2], 3)`, []int{1, 2, 3}},
+		{`push([1, 2], "three")`, []interface{}{1, 2, "three"}},
+		{`push([1, 2], [3, 4])`, []interface{}{1, 2, []int{3, 4}}},
+		{`push([1, 2])`, "wrong number of arguments. got=1, want=2"},
+		{`push(5, 10)`, "argument to `push` not supported. got INTEGER"},
 	}
 
 	for _, tt := range tests {
@@ -311,6 +333,25 @@ func TestBuiltinFunctions(t *testing.T) {
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case []int:
+			arrayObj, ok := evaluated.(*object.Array)
+			if !ok{
+				t.Errorf("object is not Array. got=%T(%+v)", evaluated, evaluated)
+			}
+			
+			if len(arrayObj.Elements) != len(expected) {
+				t.Errorf("array has wrong number of elements. expected=%d, got=%d", len(expected), len(arrayObj.Elements))
+			}
+
+			for idx, el := range arrayObj.Elements {
+				switch elObj := el.(type) {
+				case *object.Integer:
+					testIntegerObject(t, elObj, int64(expected[idx]))
+				case *object.String:
+					testStringObject(t, elObj, fmt.Sprintf("%q", expected[idx]))
+				}
+			}
+
 		case string:
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
