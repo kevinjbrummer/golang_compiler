@@ -20,6 +20,7 @@ const (
 	ERROR_OBJ = "ERROR"
 	FUNCTION_OBJ = "OBJECT"
 	BUILTIN_OBJ = "BUILTIN"
+	ARRAY_OBJ = "ARRAY"
 )
 
 type Object interface {
@@ -135,4 +136,28 @@ func(b *Builtin) Inspect() string {
 
 func(b *Builtin) Type() ObjectType {
 	return BUILTIN_OBJ
+}
+
+type Array struct {
+	Elements []Object
+}
+
+func(a *Array) Inspect() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+
+	for _, el := range a.Elements {
+		elements = append(elements, el.Inspect())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
+
+func(a *Array) Type() ObjectType {
+	return ARRAY_OBJ
 }
