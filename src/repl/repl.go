@@ -37,6 +37,7 @@ func Start(in io.Reader, out io.Writer) {
 	fmt.Printf("Feel free to type in commands\n")
 
 	env := object.NewEnvironment()
+	macroEnv := object.NewEnvironment()
 
 	for {
 		fmt.Fprint(out, color.ColorWrapper(color.GREEN, PROMPT))
@@ -60,7 +61,10 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluated := evaluator.Eval(program, env)
+		evaluator.DefineMacros(program, macroEnv)
+		expanded := evaluator.ExpandMacros(program, macroEnv)
+
+		evaluated := evaluator.Eval(expanded, env)
 
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
