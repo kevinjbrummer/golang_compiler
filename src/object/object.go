@@ -25,6 +25,7 @@ const (
 	BUILTIN_OBJ = "BUILTIN"
 	ARRAY_OBJ = "ARRAY"
 	HASH_OBJ = "HASH"
+	QUOTE_OBJ = "QUOTE"
 )
 
 type Object interface {
@@ -235,4 +236,22 @@ func (h *Hash) Type() ObjectType {
 
 type Hashable interface {
 	HashKey() HashKey
+}
+
+type Quote struct {
+	Node ast.Node
+}
+
+func (q *Quote) Inspect() string {
+	var out bytes.Buffer
+
+	out.WriteString("QUOTE(")
+	out.WriteString(q.Node.String())
+	out.WriteString(")")
+
+	return out.String()
+}
+
+func (q *Quote) Type() ObjectType {
+	return QUOTE_OBJ
 }
