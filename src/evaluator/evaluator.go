@@ -153,6 +153,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalInfixExpression(node.Operator, left, right)
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
+	case *ast.WhileExpression:
+		return evalWhileExpression(node, env)
 	case *ast.LetStatement:
 		val := Eval(node.Value, env)
 		if isError(val) {
@@ -352,6 +354,25 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Obje
 	} else {
 		return NULL
 	}
+}
+
+func evalWhileExpression(ie *ast.WhileExpression, env *object.Environment) object.Object {
+	var condition object.Object
+	condition = Eval(ie.Condition, env)
+
+	if isError(condition) {
+		return condition
+	}
+
+	var result object.Object
+	result = NULL
+
+	for isTruthy(condition) {
+		result = Eval(ie.Loop, env)
+		condition = Eval(ie.Condition, env)
+	} 
+	
+	return result
 }
 
 func isTruthy(obj object.Object) bool {
