@@ -51,6 +51,10 @@ func TestNextToken(t *testing.T) {
 	5 ** 2;
 
 	macro(x, y) { x + y; };
+
+	while (true) {
+		print("loop");
+	}
 	`
 
 	tests := []struct {
@@ -177,6 +181,17 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
+		{token.WHILE, "while"},
+		{token.LPAREN, "("},
+		{token.TRUE, "true"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "print"},
+		{token.LPAREN, "("},
+		{token.STRING, "loop"},
+		{token.RPAREN, ")"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 

@@ -56,6 +56,7 @@ const (
 
 	FUNCTION = "FUNCTION"
 	LET = "LET"
+	WHILE = "WHILE"
 	MACRO = "MACRO"
 )
 
@@ -67,6 +68,7 @@ var keywords = map[string]TokenType {
 	"return": RETURN,
 	"true": TRUE,
 	"false": FALSE,
+	"while": WHILE,
 	"macro": MACRO,
 }
 
