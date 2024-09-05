@@ -1,4 +1,4 @@
-# GOLANG Interpreter
+# Golang Compiler
 
 ## Outline
 
