@@ -56,6 +56,7 @@ const (
 
 	FUNCTION = "FUNCTION"
 	LET = "LET"
+	MACRO = "MACRO"
 )
 
 var keywords = map[string]TokenType {
@@ -66,6 +67,7 @@ var keywords = map[string]TokenType {
 	"return": RETURN,
 	"true": TRUE,
 	"false": FALSE,
+	"macro": MACRO,
 }
 
 func LookUpIdent(ident string) TokenType {
