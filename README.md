@@ -15,7 +15,7 @@ Along with what was written in the book, I challenged myself to add some more fe
 * comparison operators with <=, >=
 * exponentiation with **
 * while loops
-* string escape literals with \n, \t, \"
+* string escape literals with \n, \t, \\"
 * string concatenation with +
 
 ## Resources 
