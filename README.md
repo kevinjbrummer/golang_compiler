@@ -4,7 +4,7 @@
 
 I had always been interested in the inner workings of programming languages, but the words "interpreter" and "compiler" were just some magic words that made what I type in the text editer turn into a working program.
 
-I had always been hesitent to approach studying this topic, but one day I was recommended Thorsten Ball's *Writing An Interpreter In Go*. 
+I had always been hesitent to approach studying this topic, but one day I was recommended Thorsten Ball's *Writing A Compiler In Go*. 
 
 This repository is for the code I wrote while reading the book and my first step in learning about the inner workings of programming languages.
 
