@@ -34,12 +34,22 @@ func TestInstructionsString(t *testing.T) {
 		Make(OpConstant, 2),
 		Make(OpConstant, 65535),
 		Make(OpAdd),
+		Make(OpSub),
+		Make(OpMul),
+		Make(OpDiv),
+		Make(OpExp),
+		Make(OpPop),
 	}
 
 	expected := `0000 OpConstant 1
 0003 OpConstant 2
 0006 OpConstant 65535
 0009 OpAdd
+0010 OpSub
+0011 OpMul
+0012 OpDiv
+0013 OpExp
+0014 OpPop
 `
 
 	concatted := Instructions{}
