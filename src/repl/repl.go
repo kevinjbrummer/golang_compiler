@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"goblin/color"
-	"goblin/evaluator"
+	"goblin/compiler"
 	"goblin/lexer"
-	"goblin/object"
 	"goblin/parser"
+	"goblin/vm"
 	"io"
 	"os/user"
 )
@@ -36,9 +36,6 @@ func Start(in io.Reader, out io.Writer) {
 	fmt.Printf("Hello %s! This is the Goblin programming language!\n", user.Username)
 	fmt.Printf("Feel free to type in commands\n")
 
-	env := object.NewEnvironment()
-	macroEnv := object.NewEnvironment()
-
 	for {
 		fmt.Fprint(out, color.ColorWrapper(color.GREEN, PROMPT))
 		scanned := scanner.Scan()
@@ -61,15 +58,23 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluator.DefineMacros(program, macroEnv)
-		expanded := evaluator.ExpandMacros(program, macroEnv)
-
-		evaluated := evaluator.Eval(expanded, env)
-
-		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
-			io.WriteString(out, "\n")
+		comp := compiler.New()
+		err := comp.Compile(program)
+		if err != nil {
+			fmt.Fprintf(out, "whoops! Compilation failed: \n %s\n", err)
+			continue
 		}
+		
+		machine := vm.New(comp.Bytecode())
+		err = machine.Run()
+		if err != nil {
+			fmt.Fprintf(out, "whoops! Executing bytecode failed: \n %s\n", err)
+			continue
+		}
+		
+		lastPopped := machine.LastPoppedStackElem()
+		io.WriteString(out, lastPopped.Inspect())
+		io.WriteString(out, "\n")
 	}
 }
 
