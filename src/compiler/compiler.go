@@ -35,6 +35,22 @@ func(c *Compiler) Compile(node ast.Node) error {
 		}
 		c.emit(code.OpPop)
 	case *ast.InfixExpression:
+
+		if node.Operator == "<" {
+			err := c.reverseInfixCompile(code.OpGreaterThan, *node)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+		if node.Operator == "<=" {
+			err := c.reverseInfixCompile(code.OpGreaterThanEqual, *node)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+
 		err := c.Compile(node.Left)
 		if err != nil {
 			return err
@@ -56,6 +72,14 @@ func(c *Compiler) Compile(node ast.Node) error {
 			c.emit(code.OpDiv)
 		case "**":
 			c.emit(code.OpExp)
+		case "==":
+			c.emit(code.OpEqual)
+		case "!=":
+			c.emit(code.OpNotEqual)
+		case ">":
+			c.emit(code.OpGreaterThan)
+		case ">=":
+			c.emit(code.OpGreaterThanEqual)
 		default:
 			return fmt.Errorf("unknown operator %s", node.Operator)
 		}
@@ -89,6 +113,21 @@ func (c *Compiler) addInstruction(ins []byte) int {
 	c.instructions = append(c.instructions, ins...)
 	return posNewInstruction
 }
+
+func (c *Compiler) reverseInfixCompile(op code.Opcode, node ast.InfixExpression) error {
+	err := c.Compile(node.Right)
+	if err != nil {
+		return err
+	}
+
+	err = c.Compile(node.Left)
+	if err != nil {
+		return err
+	}
+
+	c.emit(op)
+	return nil
+} 
 
 func (c *Compiler) Bytecode() *Bytecode {
 	return &Bytecode{

@@ -38,6 +38,12 @@ func TestInstructionsString(t *testing.T) {
 		Make(OpMul),
 		Make(OpDiv),
 		Make(OpExp),
+		Make(OpTrue),
+		Make(OpFalse),
+		Make(OpEqual),
+		Make(OpNotEqual),
+		Make(OpGreaterThan),
+		Make(OpGreaterThanEqual),
 		Make(OpPop),
 	}
 
@@ -49,7 +55,13 @@ func TestInstructionsString(t *testing.T) {
 0011 OpMul
 0012 OpDiv
 0013 OpExp
-0014 OpPop
+0014 OpTrue
+0015 OpFalse
+0016 OpEqual
+0017 OpNotEqual
+0018 OpGreaterThan
+0019 OpGreaterThanEqual
+0020 OpPop
 `
 
 	concatted := Instructions{}
